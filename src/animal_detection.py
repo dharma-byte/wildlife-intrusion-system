@@ -16,12 +16,13 @@ from datetime import datetime
 
 warnings.filterwarnings("ignore")
 
-ser = serial.Serial('COM5', baudrate=9600)
+ser = None
+print("Running in simulation mode (no Arduino)")
  # Adjust COM port and baudrate as needed
 print("Serial connection opened successfully!")
 
 # Load the YOLOv8 model
-model = YOLO(" ") # replace with your model path
+model = YOLO("yolov8n.pt") # replace with your model path
 
 # Email credentials 
 sender_email = " " #Sender's Email Address
@@ -71,7 +72,7 @@ cap = cv2.VideoCapture(0)
 
 # List of animal classes to detect
 #animal_classes = ["dog", "cat", "cow", "horse", "sheep", "elephant", "bear", "zebra", "giraffe", "bird"]
-animal_classes = ["Bear", "Elephant", "lion", "rhino"]
+animal_classes = ["person", "dog", "cat", "cow"]
 
 while cap.isOpened():
     ret, frame = cap.read()
@@ -101,10 +102,10 @@ while cap.isOpened():
                 
                 print(f"Detected: {label} with confidence {confidence:.2f}")
                 values_string = f"${label}#\n"
-                ser.write(bytes(values_string, 'utf-8'))
+                print(f"[SIMULATED TX] {values_string}")
                 print(f"data sent : {values_string}")
                 photo_filename = capture_photo(frame)  # Capture photo
-                send_mail(f"{label} detected", photo_filename)
+                 # send_mail(f"{label} detected", photo_filename)
                 time.sleep(10)
                 
 
